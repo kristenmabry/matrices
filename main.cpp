@@ -2,7 +2,19 @@
 #include <chrono>
 #include <ctime>
 #include "csquarematrix.h"
+#include "csortedlist.h"
 using namespace std;
+
+void Commands();
+void DisplayGUI();
+void AddMatrices() { }
+void NewMatrix() { }
+void EditMatrix() { }
+void GetInverse() { }
+void MultiplyMatrices() { }
+void RemoveMatrix() { }
+void ScalarMultiplication() { }
+void GetTranspose() { }
 
 
 int main()
@@ -35,4 +47,69 @@ int main()
 	delete transpose;
 
 	return 1;
+}
+
+
+
+void Commands()
+{
+	bool quit = false;
+	while (!quit)
+		{
+		DisplayGUI();
+		char response;
+		cin >> response;
+
+		switch (toupper(response))
+			{
+			case 'A':
+				AddMatrices();
+				break;
+			case 'C':
+				NewMatrix();
+				break;
+			case 'E':
+				EditMatrix();
+				break;
+			case 'I':
+				GetInverse();
+				break;
+			case 'M':
+				MultiplyMatrices();
+				break;
+			case 'R':
+				RemoveMatrix();
+				break;
+			case 'S':
+				ScalarMultiplication();
+				break;
+			case 'T':
+				GetTranspose();
+				break;
+			case 'Q':
+				quit = true;
+				break;
+			default:
+				cout << "That command was not recognized.\n";
+				break;
+			}
+
+			cout << endl;
+		}
+}
+
+
+
+void DisplayGUI()
+{
+	cout << "A) Add two matrices\n";
+	cout << "C) Create new matrix\n";
+	cout << "E) Edit a matrix\n";
+	cout << "I) Inverse\n";
+	cout << "M) Matrix multiplication\n";
+	cout << "R) Remove a matrix\n";
+	cout << "S) Scalar multiplication\n";
+	cout << "T) Transpose\n";
+	cout << "Q) Quit\n";
+	cout << "Please enter a command: ";
 }

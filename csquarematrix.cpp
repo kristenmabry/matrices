@@ -55,6 +55,10 @@ using namespace std;
 
 }
 
+	CSquareMatrix::CSquareMatrix()
+{
+	m_dimension = 3;
+}
 	CSquareMatrix::~CSquareMatrix()
 {
 	for (int i = 0; i < m_dimension; i++)

@@ -3,6 +3,7 @@
 class CSquareMatrix
 {
 public:
+	CSquareMatrix();
 	CSquareMatrix(const CSquareMatrix& other);
 	CSquareMatrix(int dimension);	
 	CSquareMatrix(int dimension, int num); 
