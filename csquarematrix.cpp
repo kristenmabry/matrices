@@ -2,13 +2,30 @@
 #include <cmath>
 #include <cstdlib>
 #include <iomanip>
+#include <string>
 #include "csquarematrix.h"
 using namespace std;
+using namespace csquarematrix;
 
-	CSquareMatrix::CSquareMatrix(int dimension)
+namespace csquarematrix
+	{
+	int NUM_MATRICES = 1;
+	}
+
+// type conversion
+	CSquareMatrix::CSquareMatrix(int dimension, std::string name)
 {
 	m_dimension = dimension;
 	m_matrix = new double*[m_dimension];
+	if (name == "Matrix")
+		{
+		m_name = name + "(" + to_string(NUM_MATRICES) + ")";
+		NUM_MATRICES++;
+		}
+	else
+		{
+		m_name = name;
+		}
 	for (int i = 0; i < m_dimension; i++)
 		{
 		m_matrix[i] = new double[m_dimension];
@@ -25,10 +42,20 @@ using namespace std;
 
 
 
-	CSquareMatrix::CSquareMatrix(int dimension, int num)
+// dim and num
+	CSquareMatrix::CSquareMatrix(int dimension, int num, std::string name)
 {
 	m_dimension = dimension;
 	m_matrix = new double*[m_dimension];
+	if (name == "Matrix")
+		{
+		m_name = name + "(" + to_string(NUM_MATRICES) + ")";
+		NUM_MATRICES++;
+		}
+	else
+		{
+		m_name = name;
+		}
 	for (int i = 0; i < m_dimension; i++)
 		{
 		m_matrix[i] = new double[m_dimension];
@@ -40,10 +67,20 @@ using namespace std;
 
 }
 
-	CSquareMatrix::CSquareMatrix(const CSquareMatrix& other)
+// copy ctor
+	CSquareMatrix::CSquareMatrix(const CSquareMatrix& other, std::string name)
 {
 	m_dimension = other.m_dimension;
 	m_matrix = new double*[m_dimension];
+	if (name == "Copy of ")
+		{
+		m_name = "Copy of " + other.m_name;
+		NUM_MATRICES++;
+		}
+	else
+		{
+		m_name = name;
+		}
 	for (int i = 0; i < m_dimension; i++)
 		{
 		m_matrix[i] = new double[m_dimension];
@@ -55,10 +92,7 @@ using namespace std;
 
 }
 
-	CSquareMatrix::CSquareMatrix()
-{
-	m_dimension = 3;
-}
+// dtor
 	CSquareMatrix::~CSquareMatrix()
 {
 	for (int i = 0; i < m_dimension; i++)
@@ -131,6 +165,7 @@ bool operator==(const CSquareMatrix& lhs, const CSquareMatrix& rhs)
 
 ostream& operator<<(ostream& outStream, const CSquareMatrix& disp)
 {
+	cout << disp.m_name << ":" << endl;
 	cout.precision(3);
 	for (int i = 0; i < disp.m_dimension; i++)
 		{
@@ -224,7 +259,6 @@ void PermuteRows(double** array, int row1, int row2)
 double CSquareMatrix::Determinant() const
 {
 	CSquareMatrix copy = *this;
-
 	double det = 1.0;
 
 	for (int col = 0; col < m_dimension-1; col++)
@@ -261,7 +295,8 @@ CSquareMatrix* Multiply(const CSquareMatrix& mat1, const CSquareMatrix& mat2)
 	else
 		{
 		int dim = mat1.GetDimension();
-		CSquareMatrix* product = new CSquareMatrix(dim, 0);
+		string newName = mat1.GetName() + " * " + mat2.GetName();
+		CSquareMatrix* product = new CSquareMatrix(dim, 0, newName);
 		for (int row = 0; row < dim; row++)
 			{
 			for (int col = 0; col < dim; col++)
@@ -291,7 +326,8 @@ void CSquareMatrix::Scalar(double mult)
 CSquareMatrix* Transpose(const CSquareMatrix& src) 
 {
 	int dim = src.GetDimension();
-	CSquareMatrix* trans = new CSquareMatrix(dim);
+	string newName = src.GetName() + "-T";
+	CSquareMatrix* trans = new CSquareMatrix(dim, newName);
 
 	for (int row = 0; row < dim; row++)
 		{
@@ -306,7 +342,6 @@ CSquareMatrix* Transpose(const CSquareMatrix& src)
 
 CSquareMatrix* Inverse(const CSquareMatrix& src)
 {
-	CSquareMatrix* inverse = new CSquareMatrix(src.GetDimension());
 	double det = src.Determinant();
 	if (!det)
 		{
@@ -314,9 +349,12 @@ CSquareMatrix* Inverse(const CSquareMatrix& src)
 		}
 	else
 		{
+		CSquareMatrix* inverse = new CSquareMatrix(src.GetDimension());
 		inverse = CofactorMatrix(src);	
 		inverse = Transpose(*inverse);
 		inverse->Scalar(1/det);
+		string name = src.GetName() + "-1";
+		inverse->SetName(name);
 		return inverse;
 		}
 
