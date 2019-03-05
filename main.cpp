@@ -7,14 +7,16 @@ using namespace std;
 
 void Commands();
 void DisplayGUI();
-void AddMatrices() { }
+void AddMatrices(LNode* head);
 LNode* NewMatrix(LNode** head);
-void EditMatrix() { }
+void EditMatrix(LNode* head);
+void FindDet(LNode* head);
 void GetInverse(LNode* head);
-void MultiplyMatrices() { }
+void MultiplyMatrices(LNode* head);
 LNode* RemoveMatrix(LNode* head);
-void ScalarMultiplication() { }
-void GetTranspose() { }
+void ScalarMultiplication(LNode* head);
+void GetTranspose(LNode* head);
+LNode* SelectMatrix(LNode* head);
 
 
 
@@ -24,6 +26,7 @@ int main()
 	int dim;
 	cout << "Dimension: ";
 	cin >> dim;
+	cin.ignore();
 	CSquareMatrix m1(dim);
 
 	cout << m1 << endl;
@@ -64,35 +67,49 @@ void Commands()
 		DisplayGUI();
 		char response;
 		cin >> response;
+		cin.ignore();
 
 		switch (toupper(response))
 			{
 			case 'A':
-				AddMatrices();
+				AddMatrices(list);
 				break;
 			case 'C':
 				list = NewMatrix(&list);
 				break;
 			case 'D':
-				DisplayList(list);
+				if (list)
+					{
+					DisplayList(list);
+					}
+				else
+					{
+					cout << "List is empty...\n";
+					}
 				break;
 			case 'E':
-				EditMatrix();
+				EditMatrix(list);
+				break;
+			case 'F':
+				FindDet(list);
 				break;
 			case 'I':
 				GetInverse(list);
 				break;
 			case 'M':
-				MultiplyMatrices();
+				MultiplyMatrices(list);
+				break;
+			case 'N':
+				cout << FreeNodes(&list) << " item(s) released.\n";
 				break;
 			case 'R':
 				list = RemoveMatrix(list);
 				break;
 			case 'S':
-				ScalarMultiplication();
+				ScalarMultiplication(list);
 				break;
 			case 'T':
-				GetTranspose();
+				GetTranspose(list);
 				break;
 			case 'Q':
 				quit = true;
@@ -115,8 +132,10 @@ void DisplayGUI()
 	cout << "C) Create new matrix\n";
 	cout << "D) Display your list\n";
 	cout << "E) Edit a matrix\n";
+	cout << "F) Find the determinant\n";
 	cout << "I) Inverse\n";
 	cout << "M) Matrix multiplication\n";
+	cout << "N) Release list\n";
 	cout << "R) Remove a matrix\n";
 	cout << "S) Scalar multiplication\n";
 	cout << "T) Transpose\n";
@@ -130,12 +149,25 @@ LNode* NewMatrix(LNode** head)
 	int dimension;
 	cout << "Choose a dimension: ";
 	cin >> dimension;
+	cin.ignore();
 	string name;
 	cout << "Choose a name: ";
-	cin >> name;
+	cin.clear();
+	getline(cin, name);
 
 	CSquareMatrix* newMatrix = new CSquareMatrix(dimension, name);
+
+	char response;
+	cout << "M)anual or R)andom: ";
+	cin >> response;
+	cin.ignore();
+
+	if (toupper(response) == 'M')
+		{
+		newMatrix->EnterElements();
+		}
 	*head = InsertItem(*head, newMatrix);
+	cout << *newMatrix << endl;
 
 	return *head;
 } // end of "NewMatrix"
@@ -144,7 +176,7 @@ LNode* NewMatrix(LNode** head)
 
 LNode* RemoveMatrix(LNode* head)
 {
-	if (head == NULL)
+	if (!head)
 		{
 		cout << "List is empty...\n";
 		return head;
@@ -152,7 +184,7 @@ LNode* RemoveMatrix(LNode* head)
 
 	string name;
 	cout << "Enter the name of the matrix to remove: ";
-	cin >> name;
+	getline(cin, name);
 
 	bool success;
 	head = DeleteItem(head, name, success);
@@ -169,20 +201,191 @@ LNode* RemoveMatrix(LNode* head)
 
 void GetInverse(LNode* head)
 {
-	string name;
-	cout << "Choose a matrix: ";
-	cin >> name;
-
-	bool success;
-	LNode* chosen = GetItem(head, name, success);
-	if (success)
+	if (!head)
+		{
+		cout << "List is empty...\n";
+		return;
+		}
+	LNode* chosen = SelectMatrix(head); 
+	if (chosen)
 		{
 		CSquareMatrix* inverse = Inverse(*(chosen->item));
-		cout << *inverse << endl;
-		InsertItem(head, inverse);	
+		if (inverse)
+			{
+			cout << *inverse << endl;
+			InsertItem(head, inverse);	
+			}
+		else
+			{
+			cout << "Matrix is invertible...\n";
+			}
+		}
+} // end of "GetInverse"
+
+void ScalarMultiplication(LNode* head)
+{
+	if (!head)
+		{
+		cout << "List is empty...\n";
+		return;
+		}
+	LNode* chosen = SelectMatrix(head);
+
+	if (chosen)
+		{
+		double multiplier;
+		cout << "Enter a scalar: ";
+		cin >> multiplier;
+		cin.ignore();
+		CSquareMatrix* newMatrix = new CSquareMatrix(*(chosen->item));
+		newMatrix->Scalar(multiplier);
+		string name = to_string(multiplier) + " * ( " 
+					+ chosen->item->GetName() + " )";
+		newMatrix->SetName(name);
+		cout << *newMatrix << endl;
+		InsertItem(head, newMatrix);
+		}
+} // end of "ScalarMultiplication"
+
+
+
+void GetTranspose(LNode* head)
+{
+	if (!head)
+		{
+		cout << "List is empty...\n";
+		return;
+		}
+	LNode* chosen = SelectMatrix(head);
+
+	if (chosen)
+		{
+		CSquareMatrix* transpose = Transpose(*(chosen->item));
+		cout << *transpose;
+		InsertItem(head, transpose);
+		}
+}	
+
+LNode* SelectMatrix(LNode* head)
+{
+	string name;
+	cout << "Choose a matrix: ";
+	getline(cin, name);
+	
+	bool success;
+	LNode* chosen = GetItem(head, name, success);
+
+	if (!success)
+		{
+		cout << "Matrix not found...\n";
+		}
+
+	return chosen;
+
+} // end of "SelectMatrix"
+
+
+
+void MultiplyMatrices(LNode* head)
+{
+	if (!head)
+		{
+		cout << "List is empty...\n";
+		return;
+		}
+
+	cout << "Matrix 1: \n";
+	LNode* matrix1 = SelectMatrix(head);
+	cout << "Matrix 2: \n";
+	LNode* matrix2 = SelectMatrix(head);
+
+	if (matrix1 && matrix2)
+		{
+		CSquareMatrix* result = Multiply(*(matrix1->item), *(matrix2->item));
+		if (result)
+			{
+			cout << *result << endl;
+			InsertItem(head, result);
+			}
+		else
+			{
+			cout << "Matrices are different dimensions...\n";
+			}
 		}
 	else
 		{
-		cout << "Name not found..." << endl;
+		cout << "One or more matrices missing...\n";
 		}
-} // end of "GetInverse"
+
+} // end of "MultiplyMatrices"
+
+
+
+void AddMatrices(LNode* head)
+{
+	if (!head)
+		{
+		cout << "List is empty...\n";
+		return;
+		}
+
+	LNode* m1 = SelectMatrix(head);
+	LNode* m2 = SelectMatrix(head);
+	if (m1 && m2)
+		{
+		CSquareMatrix* added = AddMatrix(*(m1->item), *(m2->item));
+		if (added)
+			{
+			cout << *added << endl;
+			InsertItem(head, added);
+			}
+		else
+			{
+			cout << "The matrices have different dimensions...\n";
+			}
+		}
+	else
+		{
+		cout << "One or more matrices not found...\n";
+		}
+		
+} // end of "AddMatrices"
+
+
+
+void EditMatrix(LNode* head)
+{
+	if (!head)
+		{
+		cout << "List is empty...\n";
+		return;
+		}
+
+	LNode* chosen = SelectMatrix(head);
+	
+	if (chosen)
+		{
+		chosen->item->EnterElements();
+		}
+
+} // end of "Edit Matrix"
+
+
+
+void FindDet(LNode* head)
+{
+	if (!head)
+		{
+		cout << "List is empty...\n";
+		return;
+		}
+	
+	LNode* chosen = SelectMatrix(head);
+
+	if (chosen)
+		{
+		cout << "Determinant of " << chosen->item->GetName() << ": " <<
+			chosen->item->Determinant() << endl;
+		}
+
+} // end of "Find Determinant"

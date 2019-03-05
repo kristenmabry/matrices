@@ -32,9 +32,6 @@ namespace csquarematrix
 		for (int j = 0; j < m_dimension; j++)
 			{
 			int value;
-			//cout << "Set value " << i+1 << ", " << j+1 << ": ";
-			//cin >> value;
-			//m_matrix[i][j] = value;
 			m_matrix[i][j] = static_cast<double>(rand() % 10) - 4.0;
 			}
 		}
@@ -295,7 +292,7 @@ CSquareMatrix* Multiply(const CSquareMatrix& mat1, const CSquareMatrix& mat2)
 	else
 		{
 		int dim = mat1.GetDimension();
-		string newName = mat1.GetName() + " * " + mat2.GetName();
+		string newName = mat1.GetName() + " X " + mat2.GetName();
 		CSquareMatrix* product = new CSquareMatrix(dim, 0, newName);
 		for (int row = 0; row < dim; row++)
 			{
@@ -358,4 +355,46 @@ CSquareMatrix* Inverse(const CSquareMatrix& src)
 		return inverse;
 		}
 
-}
+} // end of "Inverse"
+
+
+
+void CSquareMatrix::EnterElements()
+{
+	int value;
+	for (int i = 0; i < m_dimension; i++)
+		{
+		for (int j = 0; j < m_dimension; j++)
+			{
+			cout << "Set value " << i+1 << ", " << j+1 << ": ";
+			cin >> value;
+			m_matrix[i][j] = value;
+			}
+		}
+} // end of "Enter Elements"
+
+
+
+CSquareMatrix* AddMatrix(const CSquareMatrix& mat1, const CSquareMatrix& mat2)
+{
+	int dim = mat1.GetDimension();
+	if (dim != mat2.GetDimension())
+		{
+		return NULL;
+		}
+	string newName = mat1.GetName() + " + " + mat2.GetName();
+	CSquareMatrix* result = new CSquareMatrix(dim, newName);
+
+	for (int row = 0; row < dim; row++)
+		{
+		for (int col = 0; col < dim; col++)
+			{
+			result->GetMatrix()[row][col] = mat1.GetMatrix()[row][col]
+										+ mat2.GetMatrix()[row][col];
+			}
+		}
+	
+	return result;
+
+} // end of "Add Matrix"
+

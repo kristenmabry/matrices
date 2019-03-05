@@ -26,6 +26,7 @@ public:
 	
 	double Determinant() const;
 	void Scalar(double mult);
+	void EnterElements();
 
 private:
 	int m_dimension;
@@ -41,5 +42,6 @@ double Cofactor(const CSquareMatrix& cmatrix, int findRow, int findCol);
 CSquareMatrix* Multiply(const CSquareMatrix& mat1, const CSquareMatrix& mat2);
 CSquareMatrix* Transpose(const CSquareMatrix& src);
 CSquareMatrix* Inverse(const CSquareMatrix& src);
+CSquareMatrix* AddMatrix(const CSquareMatrix& mat1, const CSquareMatrix& mat2);
 
 #endif

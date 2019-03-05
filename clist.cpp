@@ -186,7 +186,7 @@ LNode*	GetItem(LNode *head, std::string name, bool& bSuccess)
 			return head;
 			}
 		head = head->next;
-		} while (head->next != NULL);
+		} while (head != NULL);
 
 	bSuccess = false;
 	return NULL;
