@@ -16,6 +16,7 @@ void MultiplyMatrices(LNode* head);
 LNode* RemoveMatrix(LNode* head);
 void ScalarMultiplication(LNode* head);
 void GetTranspose(LNode* head);
+void SolveSystem(LNode* head);
 LNode* SelectMatrix(LNode* head);
 
 
@@ -49,6 +50,13 @@ int main()
 	delete product;
 	delete inverse;
 	delete transpose;
+
+	double array[3] = {1, 2, 3};
+	double* answers = CramersRule(m1, array);
+	for (int i = 0; i < dim; i++)
+		{
+		cout << "Answer #" << i << ": " << answers[i] << endl;
+		}
 
 	Commands();
 	return 1;
@@ -111,9 +119,12 @@ void Commands()
 			case 'T':
 				GetTranspose(list);
 				break;
+			case 'O':
+				SolveSystem(list);
+				break;
 			case 'Q':
 				quit = true;
-				FreeNodes(&list);
+				cout << FreeNodes(&list) << " item(s) released.\n";
 				break;
 			default:
 				cout << "That command was not recognized.\n";
@@ -136,6 +147,7 @@ void DisplayGUI()
 	cout << "I) Inverse\n";
 	cout << "M) Matrix multiplication\n";
 	cout << "N) Release list\n";
+	cout << "O) Solve system of equations\n";
 	cout << "R) Remove a matrix\n";
 	cout << "S) Scalar multiplication\n";
 	cout << "T) Transpose\n";
@@ -389,3 +401,40 @@ void FindDet(LNode* head)
 		}
 
 } // end of "Find Determinant"
+
+
+
+void SolveSystem(LNode* head)
+{
+	if (!head)
+		{
+		cout << "List is empty...\n";
+		return;
+		}
+	
+	LNode* chosen = SelectMatrix(head);
+	if (chosen)
+		{
+		int dim = chosen->item->GetDimension();
+		double array[dim];
+		for (int i = 0; i < dim; i++)
+			{
+			cout << "Enter b_" << i + 1 << ": ";
+			cin >> array[i];
+			}
+		double* answers = CramersRule(*(chosen->item), array);
+		if (answers)
+			{
+			for (int i = 0; i < dim; i++)
+				{
+				cout << "x_" << i+1 << " = " << answers[i] << endl;
+				}
+			delete []answers;
+			}
+		else
+			{
+			cout << "Dependent solutions currently unavailable...\n";
+			}
+		}
+
+} // end of "Solve System"

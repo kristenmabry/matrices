@@ -96,6 +96,7 @@ namespace csquarematrix
 		{
 		delete[] m_matrix[i];
 		}
+	//cout << "[Deleting " << m_name << "] (dtor)" << endl;
 	delete[] m_matrix;
 }
 
@@ -346,13 +347,13 @@ CSquareMatrix* Inverse(const CSquareMatrix& src)
 		}
 	else
 		{
-		CSquareMatrix* inverse = new CSquareMatrix(src.GetDimension());
-		inverse = CofactorMatrix(src);	
-		inverse = Transpose(*inverse);
-		inverse->Scalar(1/det);
+		CSquareMatrix* cofactor = CofactorMatrix(src); 
+		CSquareMatrix* adjoint = Transpose(*cofactor);
+		delete cofactor;
+		adjoint->Scalar(1/det);
 		string name = src.GetName() + "-1";
-		inverse->SetName(name);
-		return inverse;
+		adjoint->SetName(name);
+		return adjoint;
 		}
 
 } // end of "Inverse"
@@ -398,3 +399,31 @@ CSquareMatrix* AddMatrix(const CSquareMatrix& mat1, const CSquareMatrix& mat2)
 
 } // end of "Add Matrix"
 
+
+
+double* CramersRule(const CSquareMatrix& mat, double solutions[])
+{
+	double det = mat.Determinant();
+	if (!det)
+		{
+		return NULL;
+		}
+	else
+		{
+		int dim = mat.GetDimension();
+		double* array = new double[dim];
+		for (int i = 0; i < dim; i++)
+			{
+			// replace column i
+			CSquareMatrix replaced = mat;
+			for (int row = 0; row < dim; row++)
+				{
+				replaced.GetMatrix()[row][i] = solutions[row];
+				}
+			// divide new det by original and add to array of solutions
+			array[i] = replaced.Determinant() / det;	
+			}
+
+		return array;
+		}
+} // end of "Cramer's Rule"

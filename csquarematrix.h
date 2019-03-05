@@ -43,5 +43,6 @@ CSquareMatrix* Multiply(const CSquareMatrix& mat1, const CSquareMatrix& mat2);
 CSquareMatrix* Transpose(const CSquareMatrix& src);
 CSquareMatrix* Inverse(const CSquareMatrix& src);
 CSquareMatrix* AddMatrix(const CSquareMatrix& mat1, const CSquareMatrix& mat2);
+double* CramersRule(const CSquareMatrix& mat, double solutions[]);
 
 #endif

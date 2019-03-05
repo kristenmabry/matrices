@@ -132,7 +132,6 @@ LNode*  DeleteItem(LNode  *head, std::string name, bool  &bSuccess)
 	if (tempNode->next == NULL 
 		&& name != tempNode->item->GetName())
 		{
-		cout << "not found" << endl;
 		bSuccess = false;
 		return head;
 		}
