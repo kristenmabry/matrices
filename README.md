@@ -1,6 +1,6 @@
 # Matrices
 
-C++ program that deals with matrices
+C++ program that deals with matrices using a linked list
 
 Current Functions:
 - Determinant
@@ -9,3 +9,4 @@ Current Functions:
 - Inverse
 - Matrix Multiplication
 - Scalar Multiplication
+- Matrix Addition
