@@ -10,3 +10,5 @@ Current Functions:
 - Matrix Multiplication
 - Scalar Multiplication
 - Matrix Addition
+- Cramer's Rule for Independent Systems
+- Inner Product
