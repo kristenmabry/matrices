@@ -18,6 +18,7 @@ void ScalarMultiplication(LNode* head);
 void GetTranspose(LNode* head);
 void SolveSystem(LNode* head);
 LNode* SelectMatrix(LNode* head);
+void GetInnerProduct(LNode *head);
 
 
 
@@ -122,6 +123,9 @@ void Commands()
 			case 'O':
 				SolveSystem(list);
 				break;
+			case 'P':
+				GetInnerProduct(list);
+				break;
 			case 'Q':
 				quit = true;
 				cout << FreeNodes(&list) << " item(s) released.\n";
@@ -148,6 +152,7 @@ void DisplayGUI()
 	cout << "M) Matrix multiplication\n";
 	cout << "N) Release list\n";
 	cout << "O) Solve system of equations\n";
+	cout << "P) Inner Product\n";
 	cout << "R) Remove a matrix\n";
 	cout << "S) Scalar multiplication\n";
 	cout << "T) Transpose\n";
@@ -438,3 +443,36 @@ void SolveSystem(LNode* head)
 		}
 
 } // end of "Solve System"
+
+
+void GetInnerProduct(LNode *head)
+{
+	if (!head)
+		{
+		cout << "List is empty...\n";
+		return;
+		}
+	
+	cout << "Matrix 1: \n";
+	LNode* matrix1 = SelectMatrix(head);
+	cout << "Matrix 2: \n";
+	LNode* matrix2 = SelectMatrix(head);
+
+	if (matrix1 && matrix2)
+		{
+		if (matrix1->item->GetDimension() != matrix2->item->GetDimension())
+			{
+			cout << "Matrices are different dimensions...\n";
+			}
+		else	
+			{
+			int result = InnerProduct(*(matrix1->item), *(matrix2->item)); 
+			cout << "Inner product: " << result << endl;
+			}
+		}
+	else
+		{
+		cout << "One or more matrices missing...\n";
+		}
+}
+

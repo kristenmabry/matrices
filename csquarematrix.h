@@ -7,8 +7,7 @@ namespace csquarematrix
 	}
 
 class CSquareMatrix
-{
-public:
+{ public:
 	CSquareMatrix(const CSquareMatrix& other, std::string name = "Copy of ");
 	CSquareMatrix(int dimension, std::string name = "Matrix");
 	CSquareMatrix(int dimension, int num, std::string name = "Matrix");
@@ -21,6 +20,7 @@ public:
 	std::string GetName() const { return m_name; }
 	void SetName(std::string newName) { m_name = newName; }
 	double** GetMatrix() const { return m_matrix; }
+	int GetValue(int row, int col) const { return m_matrix[row][col]; }
 	int  GetDimension() const { return m_dimension; }
 	void SetMatrix(int row, int col, double value) { m_matrix[row][col] = value; } 
 	
@@ -44,5 +44,6 @@ CSquareMatrix* Transpose(const CSquareMatrix& src);
 CSquareMatrix* Inverse(const CSquareMatrix& src);
 CSquareMatrix* AddMatrix(const CSquareMatrix& mat1, const CSquareMatrix& mat2);
 double* CramersRule(const CSquareMatrix& mat, double solutions[]);
+int InnerProduct(const CSquareMatrix& m1, CSquareMatrix& m2);
 
 #endif

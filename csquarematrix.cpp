@@ -427,3 +427,19 @@ double* CramersRule(const CSquareMatrix& mat, double solutions[])
 		return array;
 		}
 } // end of "Cramer's Rule"
+
+
+
+int InnerProduct(const CSquareMatrix& m1, CSquareMatrix& m2)
+{
+	int total = 0;
+	int dim = m1.GetDimension();
+	for (int i = 0; i < dim; ++i)
+		{
+		for (int j = 0; j < dim; ++j)
+			{
+			total += m1.GetValue(i, j) * m2.GetValue(i, j); 
+			}
+		}
+	return total;
+}
